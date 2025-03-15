@@ -1,0 +1,46 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: "customer"
+  datasource:
+    url: "jdbc:h2:file:~/customer;AUTO_SERVER=true"
+    driver-class-name: "org.h2.Driver"
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: "accounts"
+    description: "Eazy Bank Customer Application"
+    version: "1.0.0"
+
+logging:
+  pattern:
+    console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"

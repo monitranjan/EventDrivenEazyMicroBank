@@ -1,0 +1,12 @@
+.qodo
+.idea
+.vscode
+mvnw.cmd
+mvnw
+target
+*.iml
+*.log
+*.log.*
+*.log*
+*.log/*
+.mvn
