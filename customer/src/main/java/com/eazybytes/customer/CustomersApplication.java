@@ -1,5 +1,6 @@
 package com.eazybytes.customer;
 
+import com.eazybytes.common.config.AxonConfig;
 import com.eazybytes.customer.command.interceptor.CustomerCommandInterceptor;
 import org.axonframework.commandhandling.CommandBus;
 import org.axonframework.config.EventProcessingConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@Import(AxonConfig.class)
 public class CustomersApplication {
 
     public static void main(String[] args) {

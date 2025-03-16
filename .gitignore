@@ -10,3 +10,4 @@ target
 *.log*
 *.log/*
 .mvn
+.DS_Store

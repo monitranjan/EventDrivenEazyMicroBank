@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDateTime;
 
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
 @SpringBootApplication
 public class GatewayserverApplication {
 
@@ -37,7 +39,12 @@ public class GatewayserverApplication {
                         .path("/eazybank/cards/**")
                         .filters(f -> f.rewritePath("/eazybank/cards/(?<segment>.*)", "/${segment}")
                                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
-                        .uri("lb://CARDS")).build();
+                        .uri("lb://CARDS"))
+                .route(p -> p
+                .path("/eazybank/profile/**")
+                .filters(f -> f.rewritePath("/eazybank/profile/(?<segment>.*)", "/${segment}")
+                        .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+                .uri("lb://PROFILE")).build();
 
 
     }

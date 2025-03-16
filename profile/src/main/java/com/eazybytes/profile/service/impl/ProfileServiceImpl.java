@@ -22,8 +22,8 @@ public class ProfileServiceImpl implements IProfileService {
 
     @Override
     public void handleCustomerDataChangedEvent(CustomerDataChangedEvent customerDataChangedEvent) {
-        Profile profile =profileRepository.findByMobileNumberAndActiveSw(customerDataChangedEvent.getMobileNumber(),
-                        ProfileConstants.ACTIVE_SW).orElseGet(Profile::new);
+        Profile profile = profileRepository.findByMobileNumberAndActiveSw(customerDataChangedEvent.getMobileNumber(),
+                ProfileConstants.ACTIVE_SW).orElseGet(Profile::new);
         profile.setMobileNumber(customerDataChangedEvent.getMobileNumber());
         if (customerDataChangedEvent.getName() != null) {
             profile.setName(customerDataChangedEvent.getName());
