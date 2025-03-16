@@ -1,13 +1,13 @@
-package com.eazybytes.common;
+package com.eazybytes.profile;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CommonApplicationTests {
+class ProfileApplicationTests {
 
-//    @Test
-//    void contextLoads() {
-//    }
+	@Test
+	void contextLoads() {
+	}
 
 }

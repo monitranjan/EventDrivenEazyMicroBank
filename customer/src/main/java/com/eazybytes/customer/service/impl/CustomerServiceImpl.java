@@ -1,5 +1,6 @@
 package com.eazybytes.customer.service.impl;
 
+import com.eazybytes.common.event.CustomerDataChangedEvent;
 import com.eazybytes.customer.command.event.CustomerUpdatedEvent;
 import com.eazybytes.customer.constants.CustomerConstants;
 import com.eazybytes.customer.dto.CustomerDto;
@@ -10,6 +11,7 @@ import com.eazybytes.customer.mapper.CustomerMapper;
 import com.eazybytes.customer.repository.CustomerRepository;
 import com.eazybytes.customer.service.ICustomerService;
 import lombok.AllArgsConstructor;
+import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +21,8 @@ import java.util.Optional;
 public class CustomerServiceImpl implements ICustomerService {
 
     private CustomerRepository customerRepository;
+
+    private EventGateway eventGateway;
 
     @Override
     public void createCustomer(Customer customer) {
@@ -56,6 +60,12 @@ public class CustomerServiceImpl implements ICustomerService {
         );
         customer.setActiveSw(CustomerConstants.IN_ACTIVE_SW);
         customerRepository.save(customer);
+        //since from customerAggregate delete don't have any mobileNumber so we can't dispatch event,
+        // and we have to dispatch event to be published, we are publishing the event from here
+        CustomerDataChangedEvent customerDataChangedEvent = new CustomerDataChangedEvent();
+        customerDataChangedEvent.setMobileNumber(customer.getMobileNumber());
+        customerDataChangedEvent.setActiveSw(CustomerConstants.IN_ACTIVE_SW);
+        eventGateway.publish(customerDataChangedEvent);
         return true;
     }
 
