@@ -1,5 +1,6 @@
 package com.eazybytes.loans.service.impl;
 
+import com.eazybytes.common.event.LoanDataChangedEvent;
 import com.eazybytes.loans.command.event.LoanUpdatedEvent;
 import com.eazybytes.loans.constants.LoansConstants;
 import com.eazybytes.loans.dto.LoansDto;
@@ -10,6 +11,7 @@ import com.eazybytes.loans.mapper.LoansMapper;
 import com.eazybytes.loans.repository.LoansRepository;
 import com.eazybytes.loans.service.ILoansService;
 import lombok.AllArgsConstructor;
+import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +21,8 @@ import java.util.Optional;
 public class LoansServiceImpl implements ILoansService {
 
     private LoansRepository loansRepository;
+
+    private EventGateway eventGateway;
 
     /**
      * @param loan - Loans object
@@ -71,6 +75,10 @@ public class LoansServiceImpl implements ILoansService {
         );
         loan.setActiveSw(LoansConstants.IN_ACTIVE_SW);
         loansRepository.save(loan);
+        LoanDataChangedEvent loanDataChangedEvent = new LoanDataChangedEvent();
+        loanDataChangedEvent.setMobileNumber(loan.getMobileNumber());
+        loanDataChangedEvent.setLoanNumber(0L);
+        eventGateway.publish(loanDataChangedEvent);
         return true;
     }
 
