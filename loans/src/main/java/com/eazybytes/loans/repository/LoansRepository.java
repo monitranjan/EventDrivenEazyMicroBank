@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface LoansRepository extends JpaRepository<Loans, Long> {
 
     Optional<Loans> findByMobileNumberAndActiveSw(String mobileNumber, boolean activeSw);
-
+    Optional<Loans> findByLoanNumberAndActiveSw(Long loanNumber, boolean activeSw);
 }
