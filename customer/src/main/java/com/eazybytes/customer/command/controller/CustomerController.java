@@ -11,7 +11,6 @@ import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,7 @@ import static org.springframework.http.MediaType.*;
 @RequestMapping(path = "/api", produces = {APPLICATION_JSON_VALUE})
 @Validated
 @RequiredArgsConstructor
-public class CustomerCommandController {
+public class CustomerController {
 
     private final CommandGateway commandGateway;
 

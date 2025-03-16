@@ -1,5 +1,6 @@
 package com.eazybytes.customer.service.impl;
 
+import com.eazybytes.customer.command.event.CustomerUpdatedEvent;
 import com.eazybytes.customer.constants.CustomerConstants;
 import com.eazybytes.customer.dto.CustomerDto;
 import com.eazybytes.customer.entity.Customer;
@@ -20,14 +21,12 @@ public class CustomerServiceImpl implements ICustomerService {
     private CustomerRepository customerRepository;
 
     @Override
-    public void createCustomer(CustomerDto customerDto) {
-        customerDto.setActiveSw(CustomerConstants.ACTIVE_SW);
-        Customer customer = CustomerMapper.mapToCustomer(customerDto, new Customer());
+    public void createCustomer(Customer customer) {
         Optional<Customer> optionalCustomer = customerRepository.findByMobileNumberAndActiveSw(
-                customerDto.getMobileNumber(), true);
+                customer.getMobileNumber(), true);
         if (optionalCustomer.isPresent()) {
             throw new CustomerAlreadyExistsException("Customer already registered with given mobileNumber "
-                    + customerDto.getMobileNumber());
+                    + customer.getMobileNumber());
         }
         Customer savedCustomer = customerRepository.save(customer);
     }
@@ -42,10 +41,10 @@ public class CustomerServiceImpl implements ICustomerService {
     }
 
     @Override
-    public boolean updateCustomer(CustomerDto customerDto) {
-        Customer customer = customerRepository.findByMobileNumberAndActiveSw(customerDto.getMobileNumber(), true)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", customerDto.getMobileNumber()));
-        CustomerMapper.mapToCustomer(customerDto, customer);
+    public boolean updateCustomer(CustomerUpdatedEvent customerUpdatedEvent) {
+        Customer customer = customerRepository.findByMobileNumberAndActiveSw(customerUpdatedEvent.getMobileNumber(), true)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer", "mobileNumber", customerUpdatedEvent.getMobileNumber()));
+        CustomerMapper.mapEventToCustomer(customerUpdatedEvent, customer);
         customerRepository.save(customer);
         return true;
     }

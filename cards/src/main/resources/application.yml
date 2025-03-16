@@ -41,6 +41,15 @@ info:
     description: "Eazy Bank Cards Application"
     version: "1.0.0"
 
+axon:
+  eventhandling:
+    processors:
+      customer-group:
+        mode: subscribing
+  axonserver:
+    servers: localhost:8124
+
+
 logging:
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
