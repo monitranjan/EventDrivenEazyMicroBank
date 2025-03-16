@@ -1,5 +1,6 @@
 package com.eazybytes.cards.mapper;
 
+import com.eazybytes.cards.command.event.CardUpdatedEvent;
 import com.eazybytes.cards.dto.CardsDto;
 import com.eazybytes.cards.entity.Cards;
 
@@ -22,6 +23,14 @@ public class CardsMapper {
         cards.setAvailableAmount(cardsDto.getAvailableAmount());
         cards.setAmountUsed(cardsDto.getAmountUsed());
         return cards;
+    }
+
+    public static Cards mapEventToCard(CardUpdatedEvent event, Cards card) {
+        card.setCardType(event.getCardType());
+        card.setTotalLimit(event.getTotalLimit());
+        card.setAmountUsed(event.getAmountUsed());
+        card.setAvailableAmount(event.getAvailableAmount());
+        return card;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.eazybytes.cards.service.impl;
 
+import com.eazybytes.cards.command.event.CardUpdatedEvent;
 import com.eazybytes.cards.constants.CardsConstants;
 import com.eazybytes.cards.dto.CardsDto;
 import com.eazybytes.cards.entity.Cards;
@@ -12,7 +13,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @AllArgsConstructor
@@ -21,33 +21,16 @@ public class CardsServiceImpl implements ICardsService {
     private CardsRepository cardsRepository;
 
     /**
-     * @param mobileNumber - Mobile Number of the Customer
+     * @param card - Cards object
      */
     @Override
-    public void createCard(String mobileNumber) {
-        Optional<Cards> optionalCard = cardsRepository.findByMobileNumberAndActiveSw(mobileNumber,
+    public void createCard(Cards card) {
+        Optional<Cards> optionalCard = cardsRepository.findByMobileNumberAndActiveSw(card.getMobileNumber(),
                 CardsConstants.ACTIVE_SW);
         if (optionalCard.isPresent()) {
-            throw new CardAlreadyExistsException("Card already registered with given mobileNumber " + mobileNumber);
+            throw new CardAlreadyExistsException("Card already registered with given mobileNumber " + card.getMobileNumber());
         }
-        cardsRepository.save(createNewCard(mobileNumber));
-    }
-
-    /**
-     * @param mobileNumber - Mobile Number of the Customer
-     * @return the new card details
-     */
-    private Cards createNewCard(String mobileNumber) {
-        Cards newCard = new Cards();
-        long randomCardNumber = 100000000000L + new Random().nextInt(900000000);
-        newCard.setCardNumber(randomCardNumber);
-        newCard.setMobileNumber(mobileNumber);
-        newCard.setCardType(CardsConstants.CREDIT_CARD);
-        newCard.setTotalLimit(CardsConstants.NEW_CARD_LIMIT);
-        newCard.setAmountUsed(0);
-        newCard.setAvailableAmount(CardsConstants.NEW_CARD_LIMIT);
-        newCard.setActiveSw(CardsConstants.ACTIVE_SW);
-        return newCard;
+        cardsRepository.save(card);
     }
 
     /**
@@ -63,15 +46,15 @@ public class CardsServiceImpl implements ICardsService {
     }
 
     /**
-     * @param cardsDto - CardsDto Object
+     * @param event - CardUpdatedEvent Object
      * @return boolean indicating if the update of card details is successful or not
      */
     @Override
-    public boolean updateCard(CardsDto cardsDto) {
-        Cards card = cardsRepository.findByMobileNumberAndActiveSw(cardsDto.getMobileNumber(),
+    public boolean updateCard(CardUpdatedEvent event) {
+        Cards card = cardsRepository.findByMobileNumberAndActiveSw(event.getMobileNumber(),
                 CardsConstants.ACTIVE_SW).orElseThrow(() -> new ResourceNotFoundException("Card", "CardNumber",
-                cardsDto.getCardNumber().toString()));
-        CardsMapper.mapToCards(cardsDto, card);
+                event.getMobileNumber()));
+        CardsMapper.mapEventToCard(event, card);
         cardsRepository.save(card);
         return true;
     }
